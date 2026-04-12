@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.familytree.platform.system.mapper.FamilyPersonMapper">
+    <resultMap type="com.familytree.platform.system.domain.FamilyPerson" id="FamilyPersonResult">
+        <id     property="id"       column="id"       />
+        <result property="name"     column="name"     />
+        <result property="gender"   column="gender"   />
+        <result property="birthDate" column="birth_date" />
+        <result property="deathDate" column="death_date" />
+        <result property="birthPlace" column="birth_place" />
+        <result property="deathPlace" column="death_place" />
+        <result property="description" column="description" />
+        <result property="fatherId" column="father_id" />
+        <result property="motherId" column="mother_id" />
+        <result property="spouseId" column="spouse_id" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="selectFamilyPersonVo">
+        select id, name, gender, birth_date, death_date, birth_place, death_place, description, father_id, mother_id, spouse_id, create_by, create_time, update_by, update_time from family_person
+    </sql>
+
+    <select id="selectFamilyPersonById" parameterType="Long" resultMap="FamilyPersonResult">
+        <include refid="selectFamilyPersonVo" />
+        where id = #{id}
+    </select>
+
+    <select id="selectFamilyPersonList" parameterType="com.familytree.platform.system.domain.FamilyPerson" resultMap="FamilyPersonResult">
+        <include refid="selectFamilyPersonVo" />
+        <where>
+            <if test="name != null and name != ''">
+                AND name like concat('%', #{name}, '%')
+            </if>
+            <if test="gender != null and gender != ''">
+                AND gender = #{gender}
+            </if>
+            <if test="birthDate != null">
+                AND birth_date = #{birthDate}
+            </if>
+            <if test="birthPlace != null and birthPlace != ''">
+                AND birth_place like concat('%', #{birthPlace}, '%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertFamilyPerson" parameterType="com.familytree.platform.system.domain.FamilyPerson" useGeneratedKeys="true" keyProperty="id">
+        insert into family_person
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="birthDate != null">birth_date,</if>
+            <if test="deathDate != null">death_date,</if>
+            <if test="birthPlace != null">birth_place,</if>
+            <if test="deathPlace != null">death_place,</if>
+            <if test="description != null">description,</if>
+            <if test="fatherId != null">father_id,</if>
+            <if test="motherId != null">mother_id,</if>
+            <if test="spouseId != null">spouse_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="birthDate != null">#{birthDate},</if>
+            <if test="deathDate != null">#{deathDate},</if>
+            <if test="birthPlace != null">#{birthPlace},</if>
+            <if test="deathPlace != null">#{deathPlace},</if>
+            <if test="description != null">#{description},</if>
+            <if test="fatherId != null">#{fatherId},</if>
+            <if test="motherId != null">#{motherId},</if>
+            <if test="spouseId != null">#{spouseId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFamilyPerson" parameterType="com.familytree.platform.system.domain.FamilyPerson">
+        update family_person
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="birthDate != null">birth_date = #{birthDate},</if>
+            <if test="deathDate != null">death_date = #{deathDate},</if>
+            <if test="birthPlace != null">birth_place = #{birthPlace},</if>
+            <if test="deathPlace != null">death_place = #{deathPlace},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="fatherId != null">father_id = #{fatherId},</if>
+            <if test="motherId != null">mother_id = #{motherId},</if>
+            <if test="spouseId != null">spouse_id = #{spouseId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFamilyPersonById" parameterType="Long">
+        delete from family_person where id = #{id}
+    </delete>
+
+    <delete id="deleteFamilyPersonByIds" parameterType="Long[]">
+        delete from family_person where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectChildrenByFatherId" parameterType="Long" resultMap="FamilyPersonResult">
+        <include refid="selectFamilyPersonVo" />
+        where father_id = #{fatherId}
+    </select>
+
+    <select id="selectChildrenByMotherId" parameterType="Long" resultMap="FamilyPersonResult">
+        <include refid="selectFamilyPersonVo" />
+        where mother_id = #{motherId}
+    </select>
+
+    <select id="searchFamilyPersons" parameterType="String" resultMap="FamilyPersonResult">
+        <include refid="selectFamilyPersonVo" />
+        where name like concat('%', #{keyword}, '%')
+        or birth_place like concat('%', #{keyword}, '%')
+        or description like concat('%', #{keyword}, '%')
+    </select>
+</mapper>

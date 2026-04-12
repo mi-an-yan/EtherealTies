@@ -28,7 +28,8 @@
 |-----------|-----------|------|
 | RuoYi | FamilyTreePlatform-Server | Java后端服务 |
 | RuoYi-App | FamilyTreePlatform-App | uni-app移动端应用 |
-| RuoYi-Vue | FamilyTreePlatform-Web | Vue3前端项目（包含管理后台） |
+| RuoYi-Vue | FamilyTreePlatform-Web | Vue3前端项目（网站端） |
+| RuoYi-Vue | FamilyTreePlatform-Admin | Vue3前端项目（管理后台，前后端分离） |
 
 ### 2.3 包名和路径调整
 
@@ -146,12 +147,13 @@
 - 家庭展示
 - 用户登录/注册
 
-#### 4.2.2 管理后台（FamilyTreePlatform-Web）
+#### 4.2.2 管理后台（FamilyTreePlatform-Admin，前后端分离）
 - 人员管理
 - 家庭管理
 - 族谱管理
 - 用户管理
 - 系统设置
+- 前后端分离架构，独立部署
 
 ### 4.3 移动端功能模块
 
