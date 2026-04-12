@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.familytree.platform.system.mapper.FamilyTreeMapper">
+    <resultMap type="com.familytree.platform.system.domain.FamilyTree" id="FamilyTreeResult">
+        <id     property="id"           column="id"           />
+        <result property="treeName"     column="tree_name"     />
+        <result property="founder"      column="founder"      />
+        <result property="foundingDate"  column="founding_date"  />
+        <result property="description"  column="description"  />
+        <result property="createBy"     column="create_by"     />
+        <result property="createTime"   column="create_time"   />
+        <result property="updateBy"     column="update_by"     />
+        <result property="updateTime"   column="update_time"   />
+    </resultMap>
+
+    <resultMap type="com.familytree.platform.system.domain.FamilyTreePerson" id="FamilyTreePersonResult">
+        <id     property="id"         column="id"         />
+        <result property="treeId"      column="tree_id"      />
+        <result property="personId"    column="person_id"    />
+        <result property="generation"  column="generation"  />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"  column="create_time"  />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"  column="update_time"  />
+    </resultMap>
+
+    <sql id="selectFamilyTreeVo">
+        select id, tree_name, founder, founding_date, description, create_by, create_time, update_by, update_time from family_tree
+    </sql>
+
+    <sql id="selectFamilyTreePersonVo">
+        select id, tree_id, person_id, generation, create_by, create_time, update_by, update_time from family_tree_person
+    </sql>
+
+    <select id="selectFamilyTreeById" parameterType="Long" resultMap="FamilyTreeResult">
+        <include refid="selectFamilyTreeVo" />
+        where id = #{id}
+    </select>
+
+    <select id="selectFamilyTreeList" parameterType="com.familytree.platform.system.domain.FamilyTree" resultMap="FamilyTreeResult">
+        <include refid="selectFamilyTreeVo" />
+        <where>
+            <if test="treeName != null and treeName != ''">
+                AND tree_name like concat('%', #{treeName}, '%')
+            </if>
+            <if test="founder != null and founder != ''">
+                AND founder like concat('%', #{founder}, '%')
+            </if>
+            <if test="foundingDate != null">
+                AND founding_date = #{foundingDate}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertFamilyTree" parameterType="com.familytree.platform.system.domain.FamilyTree" useGeneratedKeys="true" keyProperty="id">
+        insert into family_tree
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="treeName != null">tree_name,</if>
+            <if test="founder != null">founder,</if>
+            <if test="foundingDate != null">founding_date,</if>
+            <if test="description != null">description,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="treeName != null">#{treeName},</if>
+            <if test="founder != null">#{founder},</if>
+            <if test="foundingDate != null">#{foundingDate},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFamilyTree" parameterType="com.familytree.platform.system.domain.FamilyTree">
+        update family_tree
+        <set>
+            <if test="treeName != null">tree_name = #{treeName},</if>
+            <if test="founder != null">founder = #{founder},</if>
+            <if test="foundingDate != null">founding_date = #{foundingDate},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFamilyTreeById" parameterType="Long">
+        delete from family_tree where id = #{id}
+    </delete>
+
+    <delete id="deleteFamilyTreeByIds" parameterType="Long[]">
+        delete from family_tree where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectTreeMembers" parameterType="Long" resultMap="FamilyTreePersonResult">
+        <include refid="selectFamilyTreePersonVo" />
+        where tree_id = #{treeId}
+    </select>
+
+    <select id="selectPersonTrees" parameterType="Long" resultMap="FamilyTreePersonResult">
+        <include refid="selectFamilyTreePersonVo" />
+        where person_id = #{personId}
+    </select>
+
+    <insert id="insertFamilyTreePerson" parameterType="com.familytree.platform.system.domain.FamilyTreePerson" useGeneratedKeys="true" keyProperty="id">
+        insert into family_tree_person
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="treeId != null">tree_id,</if>
+            <if test="personId != null">person_id,</if>
+            <if test="generation != null">generation,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="treeId != null">#{treeId},</if>
+            <if test="personId != null">#{personId},</if>
+            <if test="generation != null">#{generation},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFamilyTreePerson" parameterType="com.familytree.platform.system.domain.FamilyTreePerson">
+        update family_tree_person
+        <set>
+            <if test="generation != null">generation = #{generation},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFamilyTreePersonById" parameterType="Long">
+        delete from family_tree_person where id = #{id}
+    </delete>
+
+    <delete id="deleteFamilyTreePersonByIds" parameterType="Long[]">
+        delete from family_tree_person where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectTreeMembersByGeneration" parameterType="Long" resultMap="FamilyTreePersonResult">
+        <include refid="selectFamilyTreePersonVo" />
+        where tree_id = #{treeId}
+        order by generation asc
+    </select>
+</mapper>
